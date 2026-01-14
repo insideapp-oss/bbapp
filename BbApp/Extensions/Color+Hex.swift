@@ -47,4 +47,45 @@ extension Color {
             opacity: Double(a) / 255
         )
     }
+    
+    // MARK: - Team Color Helpers
+    
+    /// Generates a deterministic random color based on a seed string.
+    /// Used for team logo placeholders when team color is not available.
+    ///
+    /// - Parameter seed: A string used to generate a consistent color (e.g., team ID or name)
+    /// - Returns: A deterministic color based on the seed
+    ///
+    /// Example:
+    /// ```swift
+    /// let teamColor = Color.randomColor(seed: "ASM")
+    /// ```
+    static func randomColor(seed: String) -> Color {
+        // Use hash of seed to generate consistent color
+        var hash = 0
+        for char in seed.utf8 {
+            hash = Int(char) &+ (hash << 6) &+ (hash << 16) &- hash
+        }
+        
+        // Ensure positive hash
+        hash = abs(hash)
+        
+        // Generate RGB values from hash (avoid too dark or too light colors)
+        let r = (hash & 0xFF0000) >> 16
+        let g = (hash & 0x00FF00) >> 8
+        let b = hash & 0x0000FF
+        
+        // Ensure minimum brightness for readability
+        let minBrightness = 100
+        let adjustedR = max(r, minBrightness)
+        let adjustedG = max(g, minBrightness)
+        let adjustedB = max(b, minBrightness)
+        
+        return Color(
+            .sRGB,
+            red: Double(adjustedR) / 255,
+            green: Double(adjustedG) / 255,
+            blue: Double(adjustedB) / 255
+        )
+    }
 }
