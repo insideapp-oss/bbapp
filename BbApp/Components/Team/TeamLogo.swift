@@ -16,27 +16,17 @@ import UIKit
 ///
 /// Example:
 /// ```swift
-/// TeamLogo(team: team, size: .medium)
-/// TeamLogo(team: team, size: .large)
+/// TeamLogo(team: team)
+///     .teamLogoSize(.large)
 /// ```
 struct TeamLogo: View {
     /// The team to display the logo for
     let team: Team
-    
-    /// The size variant for the logo
-    let size: TeamLogoSize
-    
-    /// Initializes a team logo view.
-    ///
-    /// - Parameters:
-    ///   - team: The team to display the logo for
-    ///   - size: The size variant (defaults to `.medium`)
-    init(team: Team, size: TeamLogoSize = .medium) {
-        self.team = team
-        self.size = size
-    }
-    
+
+    @Environment(\.teamLogoSize) private var size
+
     var body: some View {
+        
         Group {
             if imageExists {
                 logoImage
@@ -113,132 +103,60 @@ struct TeamLogo: View {
 // MARK: - Previews
 
 #Preview("Large Size") {
-    TeamLogo(team: .previewASM, size: .large)
+    TeamLogo(team: .previewASM)
+        .teamLogoSize(.large)
         .padding()
 }
 
 #Preview("Medium Size") {
-    TeamLogo(team: .previewASM, size: .medium)
+    TeamLogo(team: .previewASM)
+        .teamLogoSize(.medium)
         .padding()
 }
 
 #Preview("Small Size") {
-    TeamLogo(team: .previewASM, size: .small)
+    TeamLogo(team: .previewASM)
+        .teamLogoSize(.small)
         .padding()
 }
 
 #Preview("All Sizes") {
     HStack(spacing: 20) {
-        TeamLogo(team: .previewASM, size: .large)
-        TeamLogo(team: .previewASM, size: .medium)
-        TeamLogo(team: .previewASM, size: .small)
+        TeamLogo(team: .previewASM)
+            .teamLogoSize(.large)
+        TeamLogo(team: .previewASM)
+            .teamLogoSize(.medium)
+        TeamLogo(team: .previewASM)
+            .teamLogoSize(.small)
     }
     .padding()
 }
 
 #Preview("Fallback Placeholder") {
-    TeamLogo(team: .previewMissingAsset, size: .medium)
+    TeamLogo(team: .previewMissingAsset)
+        .teamLogoSize(.medium)
         .padding()
 }
 
 #Preview("Multiple Teams") {
     VStack(spacing: 20) {
         HStack(spacing: 15) {
-            TeamLogo(team: .previewASM, size: .medium)
-            TeamLogo(team: .previewASVEL, size: .medium)
-            TeamLogo(team: .previewBCM, size: .medium)
+            TeamLogo(team: .previewASM)
+                .teamLogoSize(.medium)
+            TeamLogo(team: .previewASVEL)
+                .teamLogoSize(.medium)
+            TeamLogo(team: .previewBCM)
+                .teamLogoSize(.medium)
         }
         HStack(spacing: 15) {
-            TeamLogo(team: .previewCHB, size: .medium)
-            TeamLogo(team: .previewCSP, size: .medium)
-            TeamLogo(team: .previewELC, size: .medium)
+            TeamLogo(team: .previewCHB)
+                .teamLogoSize(.medium)
+            TeamLogo(team: .previewCSP)
+                .teamLogoSize(.medium)
+            TeamLogo(team: .previewELC)
+                .teamLogoSize(.medium)
         }
     }
     .padding()
 }
 
-// MARK: - Preview Helpers
-
-extension Team {
-    /// Preview team with ASM logo (asset exists)
-    static var previewASM: Team {
-        createPreviewTeam(id: "ASM", name: "AS Monaco")
-    }
-    
-    /// Preview team with ASVEL logo (asset exists)
-    static var previewASVEL: Team {
-        createPreviewTeam(id: "ASVEL", name: "ASVEL Lyon-Villeurbanne")
-    }
-    
-    /// Preview team with BCM logo (asset exists)
-    static var previewBCM: Team {
-        createPreviewTeam(id: "BCM", name: "BCM Gravelines")
-    }
-    
-    /// Preview team with CHB logo (asset exists)
-    static var previewCHB: Team {
-        createPreviewTeam(id: "CHB", name: "Cholet Basket")
-    }
-    
-    /// Preview team with CSP logo (asset exists)
-    static var previewCSP: Team {
-        createPreviewTeam(id: "CSP", name: "CSP Limoges")
-    }
-    
-    /// Preview team with ELC logo (asset exists)
-    static var previewELC: Team {
-        createPreviewTeam(id: "ELC", name: "Elan Chalon")
-    }
-    
-    /// Preview team with missing asset (will show placeholder)
-    static var previewMissingAsset: Team {
-        createPreviewTeam(id: "MISSING", name: "Test Team")
-    }
-    
-    /// Helper to create preview team data
-    private static func createPreviewTeam(id: String, name: String) -> Team {
-        let sport = Sport.basketball
-        let club = Club(
-            id: "club-\(id)",
-            name: name,
-            sport: sport,
-            countryCode: "FR",
-            websiteUrl: nil,
-            location: nil,
-            venue: nil,
-            phoneNumber: nil,
-            email: nil,
-            color: nil
-        )
-        let competition = Competition(
-            id: "comp-1",
-            name: "Betclic Elite",
-            shortName: "Elite",
-            sport: sport,
-            countryCode: "FR",
-            gender: .male,
-            category: nil,
-            type: nil,
-            year: 2025
-        )
-        let phase = CompetitionPhase(
-            name: "Regular Season",
-            type: nil
-        )
-        let group = CompetitionGroup(
-            id: "group-1",
-            name: "Group A",
-            competition: competition,
-            phase: phase
-        )
-        
-        return Team(
-            id: id,
-            name: name,
-            number: nil,
-            club: club,
-            competition: competition,
-            groups: [group]
-        )
-    }
-}

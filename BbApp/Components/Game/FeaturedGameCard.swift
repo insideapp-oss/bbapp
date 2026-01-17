@@ -23,38 +23,42 @@ struct FeaturedGameCard: View {
             // Gradient background
             LinearGradient(
                 colors: [
-                    Color.primaryRed.opacity(0.8),
-                    Color.secondaryRed.opacity(0.8),
+                    Color.primaryRed,
+                    Color.secondaryRed
                 ],
                 startPoint: .leading,
                 endPoint: .trailing
             )
 
             // Main content
-            HStack(spacing: Spacing.medium) {
-                // Left team (team1)
-                teamSection(team: game.team1)
+            VStack {
+                HStack(spacing: Spacing.medium) {
+                    // Left team (team1)
+                    TeamView(team: game.team1)
+                        .frame(maxWidth: .infinity)
 
-                Spacer()
+                    // Center date section
+                    dateSection
+                        .padding(.horizontal, Spacing.medium)
 
-                // Center date section
-                dateSection
+                    // Right team (team2)
+                    TeamView(team: game.team2)
+                        .frame(maxWidth: .infinity)
+                }
+                .teamLogoSize(.large)
+                .padding(.horizontal, Spacing.medium)
+                .padding(.top, Spacing.medium)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-                Spacer()
-
-                // Right team (team2)
-                teamSection(team: game.team2)
-            }
-            .padding(Spacing.medium)
-
-            // Location strip overlay (bottom)
-            if let venue = game.venue {
-                VStack {
-                    Spacer()
-                    locationStrip(venue: venue)
+                // Location strip overlay (bottom)
+                if let venue = game.venue {
+                    VenueBarView(venue: venue)
+                        .foregroundStyle(Color.textOnDark)
+                        .backgroundStyle(Color.black.opacity(0.4))
                 }
             }
         }
+        .foregroundStyle(Color.white)
         .frame(height: 200)
         .cornerRadius(CornerRadius.card)
         .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
@@ -64,31 +68,19 @@ struct FeaturedGameCard: View {
 
     // MARK: - Private Views
 
-    /// Team section displaying logo and name
-    private func teamSection(team: Team) -> some View {
-        VStack(spacing: Spacing.small) {
-            TeamLogo(team: team, size: .large)
-
-            Text(team.name)
-                .font(.bodyMedium)
-                .fontWeight(.semibold)
-                .foregroundColor(.textOnDark)
-                .lineLimit(1)
-        }
-    }
-
     /// Center date section with day, month, and time pill
     private var dateSection: some View {
-        VStack(spacing: Spacing.xs) {
-            // Day number
-            Text(dayNumber)
-                .font(.headlineLarge())
-                .foregroundColor(.textOnDark)
+        VStack(spacing: Spacing.medium) {
+            // Date: Day number + Month name on same line
+            VStack(spacing: 0) {
+                Text(dayNumber)
+                    .font(.headlineLarge())
+                    .foregroundColor(.textOnDark)
 
-            // Month
-            Text(monthName)
-                .font(.bodyMedium)
-                .foregroundColor(.textOnDark.opacity(0.8))
+                Text(monthName)
+                    .font(.bodyMedium)
+                    .foregroundColor(.textOnDark.opacity(0.8))
+            }
 
             // Time pill
             Text(timeString)
@@ -101,44 +93,21 @@ struct FeaturedGameCard: View {
         }
     }
 
-    /// Location strip at the bottom
-    private func locationStrip(venue: Venue) -> some View {
-        HStack(spacing: Spacing.xs) {
-            Image(systemName: "mappin")
-                .foregroundColor(.textOnDark)
-
-            Text(venue.name)
-                .font(.bodyMedium)
-                .foregroundColor(.textOnDark)
-                .lineLimit(1)
-        }
-        .padding(.horizontal, Spacing.medium)
-        .padding(.vertical, Spacing.small)
-        .frame(maxWidth: .infinity)
-        .background(Color.brandBlack.opacity(0.4))
-    }
-
     // MARK: - Private Helpers
 
     /// Day number formatted as "d" (e.g., "15")
     private var dayNumber: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "d"
-        return formatter.string(from: game.date)
+        game.date.formatted(.dateTime.day())
     }
 
-    /// Month name formatted as "MMMM" (e.g., "January")
+    /// Month name formatted as "MMM" (e.g., "May")
     private var monthName: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM"
-        return formatter.string(from: game.date)
+        game.date.formatted(.dateTime.month(.abbreviated))
     }
 
     /// Time formatted as locale-aware short time (e.g., "7:30 PM")
     private var timeString: String {
-        let formatter = DateFormatter()
-        formatter.timeStyle = .short
-        return formatter.string(from: game.date)
+        game.date.formatted(.dateTime.hour(.defaultDigits(amPM: .abbreviated)).minute(.twoDigits))
     }
 
     /// Comprehensive accessibility label for the game card

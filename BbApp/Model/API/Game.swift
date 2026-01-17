@@ -89,6 +89,56 @@ extension Game {
         )
     }
 
+    /// Preview upcoming game with venue (for GameCard upcoming mode)
+    static var previewUpcoming: Game {
+        createPreviewGame(
+            id: "game-upcoming",
+            team1: .previewASM,
+            team2: .previewBCM,
+            startTime: 1_743_840_000_000,  // May 13, 2026 6:52 PM UTC
+            venue: createPreviewVenue()
+        )
+    }
+
+    /// Preview past game with clear winner (team2 wins)
+    static var previewPastWithWinner: Game {
+        createPreviewGameWithScores(
+            id: "game-past-winner",
+            team1: createPreviewTeam(id: "MSB", name: "Le Mans"),
+            team2: .previewASM,
+            startTime: 1_736_640_000_000,  // May 10, 2025 7:30 PM UTC
+            team1Score: 78,
+            team2Score: 89,
+            venue: createPreviewVenue(name: "Antarès")
+        )
+    }
+
+    /// Preview past game with tied scores
+    static var previewPastTied: Game {
+        createPreviewGameWithScores(
+            id: "game-past-tied",
+            team1: .previewASM,
+            team2: .previewASVEL,
+            startTime: 1_736_640_000_000,  // May 10, 2025 7:30 PM UTC
+            team1Score: 85,
+            team2Score: 85,
+            venue: createPreviewVenue()
+        )
+    }
+
+    /// Preview past game without venue
+    static var previewPastNoVenue: Game {
+        createPreviewGameWithScores(
+            id: "game-past-no-venue",
+            team1: .previewBCM,
+            team2: .previewCHB,
+            startTime: 1_736_640_000_000,  // May 10, 2025 7:30 PM UTC
+            team1Score: 92,
+            team2Score: 88,
+            venue: nil
+        )
+    }
+
     // MARK: - Private Helpers
 
     private static func createPreviewGame(
@@ -131,6 +181,53 @@ extension Game {
             snapshotRequested: false,
             team1Score: nil,
             team2Score: nil,
+            venue: venue,
+            period: nil
+        )
+    }
+
+    private static func createPreviewGameWithScores(
+        id: String,
+        team1: Team,
+        team2: Team,
+        startTime: UInt64,
+        team1Score: UInt32,
+        team2Score: UInt32,
+        venue: Venue?
+    ) -> Game {
+        let sport = Sport.basketball
+        let competition = Competition(
+            id: "comp-1",
+            name: "Betclic Elite",
+            shortName: "Elite",
+            sport: sport,
+            countryCode: "FR",
+            gender: .male,
+            category: nil,
+            type: nil,
+            year: 2025
+        )
+        let phase = CompetitionPhase(
+            name: "Regular Season",
+            type: nil
+        )
+        let group = CompetitionGroup(
+            id: "group-1",
+            name: "Group A",
+            competition: competition,
+            phase: phase
+        )
+
+        return Game(
+            id: id,
+            group: group,
+            startTime: startTime,
+            team1: team1,
+            team2: team2,
+            played: true,
+            snapshotRequested: false,
+            team1Score: team1Score,
+            team2Score: team2Score,
             venue: venue,
             period: nil
         )
