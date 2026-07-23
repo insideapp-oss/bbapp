@@ -75,7 +75,7 @@ BbApp/
 
 1. Clonez ce repository :
   ```bash
-   git clone https://github.com/insideapp-oss/bbapp.git
+   git clone https://github.com/insideapp-fr/bbapp.git
    cd bbapp
   ```
 2. Ouvrez le projet dans Xcode :
@@ -169,7 +169,7 @@ Ce projet est fourni à des fins pédagogiques. Voir le fichier LICENSE pour plu
 
 ## 📋 Backlog du projet
 
-Le développement suit un backlog structuré disponible sur [GitHub Issues](https://github.com/insideapp-oss/bbapp/issues). Chaque fonctionnalité fait l'objet d'une issue dédiée avec :
+Le développement suit un backlog structuré disponible sur [GitHub Issues](https://github.com/insideapp-fr/bbapp/issues). Chaque fonctionnalité fait l'objet d'une issue dédiée avec :
 
 - Description détaillée des exigences
 - Critères d'acceptation
